@@ -7,6 +7,7 @@ class Post(models.Model):
     type = models.CharField(max_length=100)
     message = models.CharField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    likes = models.ManyToManyField(User)
 
 
 class Group(models.Model):

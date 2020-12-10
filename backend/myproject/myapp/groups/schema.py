@@ -32,8 +32,28 @@ class CreateGroup(graphene.Mutation):
         return CreateGroup(group=group)
 
 
+class SubscribeGroup(graphene.Mutation):
+    group = graphene.Field(GroupType)
+
+    class Arguments:
+        id = graphene.Int(required=True)
+
+    def mutate(self, info, id):
+        user = info.context.user
+        group = Group.objects.get(id=id)
+        my_user = MyUser.objects.get(user=user)
+        if user not in group.subscribers.all():
+            group.subscribers.add(user)
+            my_user.groups.add(group)
+        else:
+            group.subscribers.remove(user)
+            my_user.groups.remove(group)
+        return SubscribeGroup(group=group)
+
+
 class Mutation(graphene.ObjectType):
     create_group = CreateGroup.Field()
+    subscribe_group = SubscribeGroup.Field()
 
 
 class Query(graphene.AbstractType):

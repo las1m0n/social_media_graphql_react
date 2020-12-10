@@ -29,8 +29,25 @@ class CreatePost(graphene.Mutation):
         return CreatePost(post=post)
 
 
+class LikePost(graphene.Mutation):
+    post = graphene.Field(PostType)
+
+    class Arguments:
+        id = graphene.Int(required=True)
+
+    def mutate(self, info, id):
+        user = info.context.user
+        post = Post.objects.get(id=id)
+        if user not in post.likes.all():
+            post.likes.add(user)
+        else:
+            post.likes.remove(user)
+        return LikePost(post=post)
+
+
 class Mutation(graphene.ObjectType):
     create_post = CreatePost.Field()
+    like_post = LikePost.Field()
 
 
 class Query(graphene.AbstractType):
