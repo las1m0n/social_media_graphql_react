@@ -7,19 +7,21 @@ const QUERY_USERS = gql`
 query {
   users {
     id
-    name
-    lastName
+    username
+    email
   }
 }
 `;
 
 const CREATE_USER = gql`
-mutation createUser ($name: String!, $lastName: String!){
-  createUser (name: $name, lastName: $lastName){
-    id
-    name
-    lastName
-  }
+mutation createUser ($username: String!, $password: String!, $email: String!){
+  createUser (username: $username, password: $password, email: $email){
+    user{
+       id
+       username
+       email
+     }
+    }  
 }
 `;
 
@@ -28,10 +30,10 @@ export function UserInfo() {
     const {data, loading} = useQuery(QUERY_USERS, {pollInterval: 500});
     if (loading) return <p>Loading...</p>;
 
-    return data.users.map(({id, name, lastName}) => (
+    return data.users.map(({id, username, email}) => (
         <div key={id}>
             <p>
-                User - {id}: {name} {lastName}
+                User - {id}: {username} {email}
             </p>
         </div>
     ));
@@ -39,7 +41,7 @@ export function UserInfo() {
 
 export function CreateUser() {
 
-    let inputName, inputLastName;
+    let inputName, inputPassword, inputEmail;
     const [createUser, {data}] = useMutation(CREATE_USER);
 
     return (
@@ -49,12 +51,14 @@ export function CreateUser() {
                     e.preventDefault();
                     createUser({
                         variables: {
-                            name: inputName.value,
-                            lastName: inputLastName.value
+                            username: inputName.value,
+                            password: inputPassword.value,
+                            lastName: inputEmail.value
                         }
                     });
                     inputName.value = '';
-                    inputLastName.value = '';
+                    inputPassword.value = '';
+                    inputEmail.value = '';
                     window.location.reload();
                 }}
                 style={{marginTop: '2em', marginBottom: '2em'}}
@@ -70,7 +74,13 @@ export function CreateUser() {
                 <label>Last Name: </label>
                 <input
                     ref={node => {
-                        inputLastName = node;
+                        inputPassword = node;
+                    }}
+                    style={{marginRight: '1em'}}
+                />
+                <input
+                    ref={node => {
+                        inputEmail = node;
                     }}
                     style={{marginRight: '1em'}}
                 />
