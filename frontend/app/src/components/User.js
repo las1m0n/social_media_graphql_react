@@ -25,6 +25,14 @@ mutation createUser ($username: String!, $password: String!, $email: String!){
 }
 `;
 
+const LOGIN = gql`
+mutation TokenAuth ($username: String!, $password: String!) {
+  tokenAuth(username: $username, password: $password) {
+    token
+  }
+}
+`;
+
 
 export function UserInfo() {
     const {data, loading} = useQuery(QUERY_USERS, {pollInterval: 500});
@@ -39,8 +47,49 @@ export function UserInfo() {
     ));
 }
 
-export function CreateUser() {
+export function Login() {
+    let inputName, inputPassword;
+    const [tokenAuth, {data}] = useMutation(LOGIN);
 
+    return (
+        <div>
+            <form
+                onSubmit={e => {
+                    e.preventDefault();
+                    tokenAuth({
+                        variables: {
+                            username: inputName.value,
+                            password: inputPassword.value
+                        }
+                    });
+                    inputName.value = '';
+                    inputPassword.value = '';
+                    window.location.reload();
+                }}
+                style={{marginTop: '2em', marginBottom: '2em'}}
+            >
+                <label>Name: </label>
+                <input
+                    ref={node => {
+                        inputName = node;
+                    }}
+                    style={{marginRight: '1em'}}
+                />
+
+                <label>Password: </label>
+                <input
+                    ref={node => {
+                        inputPassword = node;
+                    }}
+                    style={{marginRight: '1em'}}
+                />
+                <button type="submit" style={{cursor: 'pointer'}}>Login</button>
+            </form>
+        </div>
+    );
+}
+
+export function CreateUser() {
     let inputName, inputPassword, inputEmail;
     const [createUser, {data}] = useMutation(CREATE_USER);
 
@@ -71,13 +120,14 @@ export function CreateUser() {
                     style={{marginRight: '1em'}}
                 />
 
-                <label>Last Name: </label>
+                <label>Password: </label>
                 <input
                     ref={node => {
                         inputPassword = node;
                     }}
                     style={{marginRight: '1em'}}
                 />
+                <label>Email: </label>
                 <input
                     ref={node => {
                         inputEmail = node;
@@ -88,5 +138,4 @@ export function CreateUser() {
             </form>
         </div>
     );
-
 }

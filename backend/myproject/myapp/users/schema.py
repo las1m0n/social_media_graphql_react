@@ -59,7 +59,7 @@ class Query(graphene.AbstractType):
     me = graphene.Field(UserType)
     users = graphene.List(UserType)
 
-    @login_required
+    # @login_required
     def resolve_users(self, info):
         return get_user_model().objects.all()
 

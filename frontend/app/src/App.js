@@ -1,7 +1,7 @@
 import React from 'react';
 import ApolloClient from 'apollo-boost';
 import {ApolloProvider} from '@apollo/react-hooks';
-import {UserInfo, CreateUser} from './User'
+import {UserInfo, CreateUser, Login} from './components/User'
 
 
 const client = new ApolloClient({
@@ -19,7 +19,8 @@ const App = () => (
             height: '100vh',
             flexDirection: 'column'
         }}>
-            <h2>My first Apollo app 🚀</h2>
+            <h2>🚀🚀🚀</h2>
+            {/*<Login/>*/}
             <CreateUser/>
             <UserInfo/>
         </div>
