@@ -1,5 +1,5 @@
 import graphene
-from ..models import Post, MyUser, Group, Message, Chat
+from ..models import MyUser, Message, Chat, Group
 from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import superuser_required, login_required
 from django.contrib.auth import get_user_model
@@ -24,18 +24,28 @@ class CreateChat(graphene.Mutation):
     chat = graphene.Field(ChatType)
 
     class Arguments:
-        id = graphene.Int(required=True)
+        id = graphene.ID(required=True)
 
     def mutate(self, info, id):
-        partner_user = get_user_model().objects.get(id=id)
-        chat = Chat(
-            partner=partner_user
-        )
-        chat.save()
+        p_user = get_user_model().objects.get(id=id)
+        p_my_user = MyUser.objects.get(user=p_user)
+
         user = info.context.user
         my_user = MyUser.objects.get(user=user)
-        my_user.chats.add(chat)
-        return CreateChat(chat=chat)
+
+        chat = Chat.objects.filter(partner__in=[p_user])
+        fin_user_chats = my_user.chats.filter(partner__in=[p_user])
+        print(set(chat))
+        print(set(fin_user_chats))
+        if set(chat):
+            return CreateChat(chat=chat[0])
+        else:
+            our_chat = Chat()
+            our_chat.save()
+            our_chat.partner.add(*[p_user, user])
+            my_user.chats.add(our_chat)
+            p_my_user.chats.add(our_chat)
+            return CreateChat(chat=our_chat)
 
 
 class CreateMessage(graphene.Mutation):
@@ -43,7 +53,7 @@ class CreateMessage(graphene.Mutation):
 
     class Arguments:
         body = graphene.String(required=True)
-        chat_id = graphene.Int(required=True)
+        chat_id = graphene.ID(required=True)
 
     def mutate(self, info, body, chat_id):
         user = info.context.user
@@ -64,12 +74,25 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.AbstractType):
     all_chats = graphene.List(MyUserType)
-    all_messages = graphene.List(MyUserType)
+    me = graphene.List(MyUserType)
+    user_by_id = graphene.Field(MyUserType, id=graphene.ID())
+    chat_by_id = graphene.List(ChatType, id=graphene.ID())
 
     @login_required
     def resolve_all_chats(self, info, **kwargs):
         return MyUser.objects.filter(user=info.context.user)
 
     @login_required
-    def resolve_all_messages(self, info, **kwargs):
-        return MyUser.objects.filter(user=info.context.user)
+    def resolve_me(self, info, **kwargs):
+        user = MyUser.objects.filter(user=info.context.user)
+        return user
+
+    @login_required
+    def resolve_user_by_id(self, info, id):
+        user = get_user_model().objects.get(id=id)
+        return MyUser.objects.get(user=user) or None
+
+    @login_required
+    def resolve_chat_by_id(self, info, id):
+        chat = Chat.objects.filter(id=id)
+        return chat

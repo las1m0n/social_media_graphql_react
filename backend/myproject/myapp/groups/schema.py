@@ -1,7 +1,8 @@
 import graphene
-from ..models import Post, MyUser, Group, Message, Chat
+from ..models import MyUser, Group
 from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import superuser_required, login_required
+from graphene_django.filter import DjangoFilterConnectionField
 
 
 class GroupType(DjangoObjectType):
@@ -36,7 +37,7 @@ class SubscribeGroup(graphene.Mutation):
     group = graphene.Field(GroupType)
 
     class Arguments:
-        id = graphene.Int(required=True)
+        id = graphene.ID(required=True)
 
     def mutate(self, info, id):
         user = info.context.user
@@ -56,9 +57,18 @@ class Mutation(graphene.ObjectType):
     subscribe_group = SubscribeGroup.Field()
 
 
-class Query(graphene.AbstractType):
-    all_groups = graphene.List(GroupType)
+class Query(graphene.ObjectType):
+    diff_group = graphene.List(GroupType)
+    group_by_id = graphene.Field(GroupType, id=graphene.ID())
 
     @login_required
-    def resolve_all_groups(self, info, **kwargs):
-        return MyUser.objects.get(user=info.context.user).groups
+    def resolve_diff_group(self, info, **kwargs):
+        my_user = MyUser.objects.get(user=info.context.user)
+        user_groups = my_user.groups.all()
+        all_groups = Group.objects.all()
+        diff_groups = all_groups.difference(user_groups)
+        return diff_groups
+
+    @login_required
+    def resolve_group_by_id(root, info, id):
+        return Group.objects.get(pk=id)

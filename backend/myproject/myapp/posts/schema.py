@@ -29,11 +29,31 @@ class CreatePost(graphene.Mutation):
         return CreatePost(post=post)
 
 
+class CreateGroupPost(graphene.Mutation):
+    post = graphene.Field(PostType)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+        name = graphene.String(required=True)
+        message = graphene.String(required=True)
+
+    def mutate(self, info, id, name, message):
+        post = Post(
+            name=name,
+            message=message,
+            type="group"
+        )
+        post.save()
+        group = Group.objects.get(id=id)
+        group.posts.add(post)
+        return CreateGroupPost(post=post)
+
+
 class LikePost(graphene.Mutation):
     post = graphene.Field(PostType)
 
     class Arguments:
-        id = graphene.Int(required=True)
+        id = graphene.ID(required=True)
 
     def mutate(self, info, id):
         user = info.context.user
@@ -48,6 +68,7 @@ class LikePost(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_post = CreatePost.Field()
     like_post = LikePost.Field()
+    create_group_post = CreateGroupPost.Field()
 
 
 class Query(graphene.AbstractType):

@@ -106,13 +106,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+DATETIME_FORMAT = '%d %b, %Y - %Hh%Mm'
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -134,7 +136,7 @@ AUTHENTICATION_BACKENDS = [
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=35),
+    'JWT_EXPIRATION_DELTA': timedelta(days=7),
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7)
 }
 
