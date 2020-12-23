@@ -1,11 +1,14 @@
 import {gql, useMutation, useQuery} from "@apollo/client";
 import React, {useState} from 'react';
 import {Link, useHistory, useParams} from "react-router-dom";
+import './User.css';
+import ImageUploader from 'react-images-upload';
 
 const QUERY_USER = gql`
 query {
    allChats
    {
+    id
     aboutMe
     avatar
     user{
@@ -69,6 +72,17 @@ mutation createChat($id: ID!){
 }
 `;
 
+const CHANGE_AVATAR = gql`
+mutation changeAvatar($id: ID!, $picture: String!){
+  changeAvatar(id: $id, picture: $picture){
+    avatar{
+        avatar
+        id
+    }
+  }
+}
+`;
+
 function CreateChat(props) {
     const history = useHistory();
     const [chatCreate] = useMutation(CREATE_CHAT, {
@@ -114,20 +128,69 @@ function Friend(props) {
         </div>)
 }
 
+function ChangeAvatar(props) {
+    const [pictures, setPictures] = useState(
+        {
+            url: ""
+        }
+    );
+    const [changeAvatar] = useMutation(CHANGE_AVATAR, {
+        variables: {
+            id: props.id,
+            picture: pictures.url
+        },
+        onCompleted: ({data})=> {
+            window.location.reload();
+        }
+    });
+
+    return (
+        <div className="">
+            <div className="card card-body mt-2">
+                <div className="form-group">
+                    <input
+                        value={pictures.url}
+                        onChange={(e) =>
+                            setPictures({
+                                ...pictures,
+                                url: e.target.value
+                            })
+                        }
+                        type="text"
+                        className="form-control"
+                        placeholder="New URL Avatar"
+                    />
+                </div>
+            </div>
+            <div className="flex mt3">
+                <div className="form-group">
+                    <button
+                        className="btn btn-danger"
+                        onClick={changeAvatar}
+                    >
+                        Change Avatar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function UserInfo() {
     let {id} = useParams();
     const {loading, error, data} = useQuery(USER_INFO, {
         variables: {id},
     });
 
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>`Error! ${error}`</p>;
 
     return (
         <div>
+            <img src={data.userById.avatar} alt="no avatar" className="avatar"/>
             <p>Имя: {data.userById.user.username}</p>
             <p>Email: {data.userById.user.email}</p>
-            <img src={data.userById.avatar} alt="no avatar"/>
             <p>About Me: {data.userById.aboutMe}</p>
             <p> Friends: </p>
             {data.userById.friends.length ? (
@@ -153,11 +216,14 @@ export function User() {
         data.allChats.map((chat, id) => (
             <div key={id}>
                 Your Profile:
+                <img src={chat.avatar} alt="no avatar" className="avatar"/>
+                <div>
+                    <ChangeAvatar id={chat.id}/>
+                </div>
+                <li>About Me:{chat.aboutMe}</li>
                 <li>Username: {chat.user.username}</li>
                 <li>LastName: {chat.user.lastName}</li>
                 <li>Email: {chat.user.email}</li>
-                <li>About Me:{chat.aboutMe}</li>
-                <li>Avatar: {chat.avatar}</li>
                 <li>Friends:</li>
                 {chat.friends.map((item, index) => (
                     <div key={index}>

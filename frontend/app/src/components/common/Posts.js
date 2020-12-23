@@ -55,6 +55,12 @@ function PostCreate() {
         variables: {
             name: formState.name,
             message: formState.message,
+        },
+        onCompleted: ({action}) => {
+            setFormState({
+                name: '',
+                message: ''
+            })
         }
     });
 

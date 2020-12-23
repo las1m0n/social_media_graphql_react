@@ -34,9 +34,7 @@ class CreateChat(graphene.Mutation):
         my_user = MyUser.objects.get(user=user)
 
         chat = Chat.objects.filter(partner__in=[p_user])
-        fin_user_chats = my_user.chats.filter(partner__in=[p_user])
-        print(set(chat))
-        print(set(fin_user_chats))
+        # fin_user_chats = my_user.chats.filter(partner__in=[p_user])
         if set(chat):
             return CreateChat(chat=chat[0])
         else:
@@ -46,6 +44,19 @@ class CreateChat(graphene.Mutation):
             my_user.chats.add(our_chat)
             p_my_user.chats.add(our_chat)
             return CreateChat(chat=our_chat)
+
+
+class ChangeAvatar(graphene.Mutation):
+    avatar = graphene.Field(MyUserType)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+        picture = graphene.String(required=True)
+
+    def mutate(self, info, id, picture):
+        user = MyUser.objects.filter(id=id)
+        user.update(avatar=picture)
+        return user
 
 
 class CreateMessage(graphene.Mutation):
@@ -70,6 +81,7 @@ class CreateMessage(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_chat = CreateChat.Field()
     create_message = CreateMessage.Field()
+    change_avatar = ChangeAvatar.Field()
 
 
 class Query(graphene.AbstractType):

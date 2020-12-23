@@ -1,9 +1,6 @@
 import {gql, useMutation, useQuery} from '@apollo/client/index';
 import React, {useState} from 'react';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
     Link,
     useParams
 } from "react-router-dom";

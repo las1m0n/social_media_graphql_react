@@ -1,7 +1,7 @@
 import React from 'react'
 import {User} from './common/User';
 import {useHistory} from 'react-router';
-import {Link, Redirect } from 'react-router-dom';
+import {Link } from 'react-router-dom';
 
 export default function Media() {
     const history = useHistory();

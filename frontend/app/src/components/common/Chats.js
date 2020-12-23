@@ -1,6 +1,6 @@
 import {gql, useMutation, useQuery} from "@apollo/client";
 import React, {useState} from 'react';
-import {useHistory, useParams} from "react-router";
+import {useParams} from "react-router";
 import {Link} from "react-router-dom";
 
 const QUERY_CHATS = gql`
