@@ -1,0 +1,108 @@
+.Home {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    height: 100%;
+    padding-top: 100px;
+    justify-content: space-evenly;
+    flex-grow: 1;
+    width: 100%;
+    background: linear-gradient(90deg, #fd8355 0%, #f0576c 37%, #f79cbd 100%);
+}
+
+.HomeChild {
+    width: 30%;
+}
+
+.basis {
+    flex-basis: 50%;
+}
+
+.Home h1, h2 {
+    color: #fff;
+}
+
+.Home ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Home li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.Home li a:hover {
+    color: gray;
+}
+
+.avatar {
+    text-align: center;
+    width: 128px;
+    margin-left: 50px;
+    display: block;
+}
+
+.Home p {
+    padding-top: 10px;
+}
+
+.SpaceBetween {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.btn.btn-friend {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.btn.btn-friend button:focus {
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.link {
+    text-decoration: none;
+    margin: 0;
+    color: #000000;
+}
+
+.link:hover, .link:active {
+    text-decoration: none;
+    color: inherit
+}
+
+.friends {
+    padding-right: 50px;
+}
+
+.btn.btn-edit button:focus {
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+
+}
+
+.btn.btn-edit {
+    color: #343434;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.Timing {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
