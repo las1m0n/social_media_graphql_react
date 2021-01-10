@@ -65,10 +65,23 @@ class LikePost(graphene.Mutation):
         return LikePost(post=post)
 
 
+class DeletePost(graphene.Mutation):
+    post = graphene.Field(PostType)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    def mutate(self, info, id):
+        post = Post.objects.get(id=id)
+        post.delete()
+        return {"status": "ok"}
+
+
 class Mutation(graphene.ObjectType):
     create_post = CreatePost.Field()
     like_post = LikePost.Field()
     create_group_post = CreateGroupPost.Field()
+    delete_post = DeletePost.Field()
 
 
 class Query(graphene.AbstractType):

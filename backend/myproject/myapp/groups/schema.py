@@ -15,13 +15,12 @@ class CreateGroup(graphene.Mutation):
 
     class Arguments:
         name = graphene.String(required=True)
-        avatar = graphene.String(required=True)
         about = graphene.String(required=True)
 
-    def mutate(self, info, name, avatar, about):
+    def mutate(self, info, name, about):
         group = Group(
             name=name,
-            avatar=avatar,
+            avatar="avatar",
             about=about,
             owner=info.context.user
         )

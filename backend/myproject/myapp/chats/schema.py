@@ -33,7 +33,7 @@ class CreateChat(graphene.Mutation):
         user = info.context.user
         my_user = MyUser.objects.get(user=user)
 
-        chat = Chat.objects.filter(partner__in=[p_user])
+        chat = Chat.objects.filter(partner__in=[p_user]).filter(partner__in=[user])
         # fin_user_chats = my_user.chats.filter(partner__in=[p_user])
         if set(chat):
             return CreateChat(chat=chat[0])
@@ -78,10 +78,24 @@ class CreateMessage(graphene.Mutation):
         return CreateMessage(message=message)
 
 
+class ChangeStatus(graphene.Mutation):
+    status = graphene.Field(MyUserType)
+
+    class Arguments:
+        status = graphene.String(required=True)
+
+    def mutate(self, info, status):
+        user = info.context.user
+        my_user = MyUser.objects.filter(user=user)
+        my_user.update(about_me=status)
+        return {"statusOperation": "changed!"}
+
+
 class Mutation(graphene.ObjectType):
     create_chat = CreateChat.Field()
     create_message = CreateMessage.Field()
     change_avatar = ChangeAvatar.Field()
+    change_status = ChangeStatus.Field()
 
 
 class Query(graphene.AbstractType):
