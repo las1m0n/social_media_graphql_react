@@ -1,5 +1,4 @@
 import {gql, useMutation} from "@apollo/client";
-import {Link} from "react-router-dom";
 import React from "react";
 
 const ADD_TO_FRIEND_LIST = gql`

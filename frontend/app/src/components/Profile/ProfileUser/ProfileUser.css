@@ -1,0 +1,12 @@
+.btn .btn-user {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.btn.btn-user:focus {
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+}

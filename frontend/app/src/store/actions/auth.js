@@ -1,7 +1,4 @@
-import axios from "axios";
 import {AUTH_SUCCESS, AUTH_LOGOUT} from './actionTypes';
-import {gql, useMutation} from '@apollo/client';
-import {useHistory} from "react-router";
 
 export function authSuccess(token) {
     return {

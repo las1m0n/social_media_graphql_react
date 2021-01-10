@@ -1,4 +1,4 @@
-import {gql, useMutation, useQuery} from '@apollo/client/index';
+import {gql, useMutation} from '@apollo/client/index';
 import React, {useState} from "react";
 import Input from "../../UI/Input/Input";
 import Button from "../../UI/Button/Button";

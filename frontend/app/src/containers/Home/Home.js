@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './Home.css'
-import {Link, NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
 import Loader from "../../components/UI/Loader/Loader";
 import {gql, useQuery} from "@apollo/client";
 import PostList from "../../components/Posts/PostList/PostList";
@@ -77,7 +77,7 @@ const Home = (props) => {
                     <ul>
                         {diffFriends?.map((friend, id) => (
                             <div key={id} className="SpaceBetween">
-                                <Link to={`/users/${friend.id}`} className="link">
+                                <Link to={`/profile/${friend.id}`} className="link">
                                     <li>{friend.username}</li>
                                 </Link>
                                 <FriendList id={friend.id} icon="fas fa-user-friends"/>

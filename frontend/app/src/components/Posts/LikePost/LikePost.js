@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {gql, useMutation, useQuery} from '@apollo/client/index';
+import React from 'react';
+import {gql, useMutation} from '@apollo/client/index';
 
 const LIKE_POST = gql`
 mutation likePost($id: ID!){
